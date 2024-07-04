@@ -5,6 +5,7 @@ import "./Home.scss";
 import Header from "../Header/Header";
 import { useSelector } from "react-redux";
 import { selectSearchValue } from "../../State/Search/searchSlice";
+import { useNavigate } from "react-router-dom";
 
 // Interface
 type recipeType = {
@@ -16,11 +17,26 @@ type recipeType = {
   image: string;
   reviewCount: number;
   prepTimeMinutes: number;
+  id: number;
 };
 
 export default function Home() {
   const [recipes, setRecipes] = useState<recipeType[]>([]);
   const searchValue = useSelector(selectSearchValue);
+
+  const navigate = useNavigate();
+
+  const handleClick = (id: number, name: string, cuisine: string) => {
+    navigate(
+      `/details?id=${id}&name=${encodeURIComponent(
+        name
+      )}&cuisine=${encodeURIComponent(cuisine)}`
+    );
+  };
+
+  // useEffect(() => {
+  //   console.log(handleClick);
+  // });
 
   const getRecipes = () => {
     axios
@@ -80,7 +96,13 @@ export default function Home() {
               </p>
               {/* <p>Tags: {recipe.tags}</p> */}
             </div>
-            <button>More details</button>
+            <button
+              onClick={() =>
+                handleClick(recipe.id, recipe.name, recipe.cuisine)
+              }
+            >
+              More details
+            </button>
           </div>
         ))}
       </div>
