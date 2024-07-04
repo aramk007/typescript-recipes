@@ -18,7 +18,6 @@ type recipeType = {
 export default function Home() {
   const [recipes, setRecipes] = useState<recipeType[]>([]);
   const [filterRecipes, setFilterRecipes] = useState();
-  const [difficulty, setDifficulty] = useState("");
 
   const getRecipes = () => {
     axios
@@ -27,12 +26,6 @@ export default function Home() {
         console.log(res.data.recipes);
         setRecipes(res.data.recipes);
         setFilterRecipes(res.data.recipes);
-        recipes.map(() => {
-          if (res.data.recipes.difficulty === "Easy") {
-            setDifficulty(res.data.recipes.difficulty && res.data.recipes.name);
-          }
-          console.log(difficulty);
-        });
       })
       .catch((error) => {
         console.log(error);
