@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReactStars from "react-stars";
 import "./Home.scss";
+import Header from "../Header/Header";
 
 //Interface
 type recipeType = {
@@ -37,47 +38,50 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="recipeWrapper">
-      {recipes.map((recipe, index) => {
-        return (
-          <>
-            <div className="recipeContainer" key={index}>
-              <img src={recipe.image} alt="" />
-              <h1>{recipe.name}</h1>
-              <div className="reviewsContainer">
-                <ReactStars
-                  edit={false}
-                  size={30}
-                  half={true}
-                  value={recipe.rating}
-                />
-                <p>({recipe.reviewCount} Reviews)</p>
+    <>
+      <Header />
+      <div className="recipeWrapper">
+        {recipes.map((recipe, index) => {
+          return (
+            <>
+              <div className="recipeContainer" key={index}>
+                <img src={recipe.image} alt="" />
+                <h1>{recipe.name}</h1>
+                <div className="reviewsContainer">
+                  <ReactStars
+                    edit={false}
+                    size={30}
+                    half={true}
+                    value={recipe.rating}
+                  />
+                  <p>({recipe.reviewCount} Reviews)</p>
+                </div>
+                <div className="detailsContainer">
+                  <p>Prep Time: {recipe.prepTimeMinutes} Minutes</p>
+                  <p>
+                    Difficulty:
+                    <span
+                      className={
+                        recipe.difficulty === "Easy"
+                          ? "easy"
+                          : recipe.difficulty === "Medium"
+                          ? "medium"
+                          : recipe.difficulty === "Hard"
+                          ? "hard"
+                          : ""
+                      }
+                    >
+                      {recipe.difficulty}
+                    </span>
+                  </p>
+                  {/* <p>Tags: {recipe.tags}</p> */}
+                </div>
+                <button>More details</button>
               </div>
-              <div className="detailsContainer">
-                <p>Prep Time: {recipe.prepTimeMinutes} Minutes</p>
-                <p>
-                  Difficulty:
-                  <span
-                    className={
-                      recipe.difficulty === "Easy"
-                        ? "easy"
-                        : recipe.difficulty === "Medium"
-                        ? "medium"
-                        : recipe.difficulty === "Hard"
-                        ? "hard"
-                        : ""
-                    }
-                  >
-                    {recipe.difficulty}
-                  </span>
-                </p>
-                {/* <p>Tags: {recipe.tags}</p> */}
-              </div>
-              <button>More details</button>
-            </div>
-          </>
-        );
-      })}
-    </div>
+            </>
+          );
+        })}
+      </div>
+    </>
   );
 }
