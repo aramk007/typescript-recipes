@@ -7,21 +7,22 @@
   .recipeContainer {
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 
     border: 1px solid #333;
     border-radius: 5px;
     text-align: center;
     background-color: aliceblue;
     @media (min-width: 300px) {
-      width: 90%;
+      min-width: 90%;
       margin: auto;
     }
     @media (min-width: 500px) {
-      width: 46%;
+      min-width: 46%;
       margin: auto;
     }
     @media (min-width: 1050px) {
-      width: 30%;
+      min-width: 30%;
       margin: auto;
     }
     button {
@@ -91,4 +92,9 @@
       }
     }
   }
+}
+.recipeContainer:hover {
+  transform: scale(1.02);
+  transition: linear 160ms;
+  box-shadow: 3px 2.5px 2.5px #33333379;
 }
