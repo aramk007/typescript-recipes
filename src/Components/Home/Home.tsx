@@ -99,6 +99,8 @@ export default function Home() {
             >
               More details
             </button>
+
+            <br />
           </div>
         ))}
       </div>
