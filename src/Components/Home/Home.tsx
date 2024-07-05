@@ -34,10 +34,6 @@ export default function Home() {
     );
   };
 
-  // useEffect(() => {
-  //   console.log(handleClick);
-  // });
-
   const getRecipes = () => {
     axios
       .get("https://dummyjson.com/recipes")
