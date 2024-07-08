@@ -9,15 +9,15 @@ import { useNavigate } from "react-router-dom";
 
 // Interface
 type recipeType = {
-  name: string;
-  rating: number;
-  cuisine: string;
-  difficulty: string;
+  recipeName: string;
+  instruction: [string];
   ingredients: [string];
   image: string;
-  reviewCount: number;
-  prepTimeMinutes: number;
-  id: number;
+  prepTime: number;
+  calories: number;
+  rating: number;
+  difficulty: string;
+  _id: string;
 };
 
 export default function Home() {
@@ -26,20 +26,16 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  const handleClick = (id: number, name: string, cuisine: string) => {
-    navigate(
-      `/details?id=${id}&name=${encodeURIComponent(
-        name
-      )}&cuisine=${encodeURIComponent(cuisine)}`
-    );
+  const handleClick = (_id: string, name: string) => {
+    navigate(`/details?_id=${_id}&name=${encodeURIComponent(name)}`);
   };
 
   const getRecipes = () => {
     axios
-      .get("https://dummyjson.com/recipes")
+      .get("http://localhost:5500/api/recipes/")
       .then((res) => {
-        console.log(res.data.recipes);
-        setRecipes(res.data.recipes);
+        console.log(res.data);
+        setRecipes(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -52,8 +48,12 @@ export default function Home() {
 
   // Filter recipes based on the search value
   const filteredRecipes = recipes.filter((recipe) =>
-    recipe.name.toLowerCase().includes(searchValue.toLowerCase())
+    recipe.recipeName.toLowerCase().includes(searchValue.toLowerCase())
   );
+
+  const reviewCount = () => {
+    return Math.floor(Math.random() * 100);
+  };
 
   return (
     <>
@@ -62,7 +62,7 @@ export default function Home() {
         {filteredRecipes.map((recipe, index) => (
           <div className="recipeContainer" key={index}>
             <img src={recipe.image} alt="" />
-            <h1>{recipe.name}</h1>
+            <h1>{recipe.recipeName}</h1>
             <div className="reviewsContainer">
               <ReactStars
                 edit={false}
@@ -70,10 +70,10 @@ export default function Home() {
                 half={true}
                 value={recipe.rating}
               />
-              <p>({recipe.reviewCount} Reviews)</p>
+              <p>({reviewCount()} Reviews)</p>
             </div>
             <div className="detailsContainer">
-              <p>Prep Time: {recipe.prepTimeMinutes} Minutes</p>
+              <p>Prep Time: {recipe.prepTime} Minutes</p>
               <p>
                 Difficulty:
                 <span
@@ -90,13 +90,8 @@ export default function Home() {
                   {recipe.difficulty}
                 </span>
               </p>
-              {/* <p>Tags: {recipe.tags}</p> */}
             </div>
-            <button
-              onClick={() =>
-                handleClick(recipe.id, recipe.name, recipe.cuisine)
-              }
-            >
+            <button onClick={() => handleClick(recipe._id, recipe.recipeName)}>
               More details
             </button>
 

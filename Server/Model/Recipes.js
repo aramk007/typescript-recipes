@@ -24,6 +24,14 @@ const recipeSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  rating: {
+    type: Number,
+    required: true,
+  },
+  difficulty: {
+    type: String,
+    required: true,
+  },
 });
 
 const Recipe = new mongoose.model("recipes", recipeSchema);
