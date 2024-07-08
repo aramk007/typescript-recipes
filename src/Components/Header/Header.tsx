@@ -16,6 +16,7 @@ export default function Header() {
   return (
     <div className="header">
       <input
+        className="input"
         type="search"
         placeholder="Search..."
         value={searchInput}
