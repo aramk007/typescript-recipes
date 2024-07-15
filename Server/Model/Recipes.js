@@ -32,6 +32,10 @@ const recipeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
 });
 
 const Recipe = new mongoose.model("recipes", recipeSchema);
