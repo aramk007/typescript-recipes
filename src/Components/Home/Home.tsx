@@ -30,6 +30,11 @@ export default function Home() {
     navigate(`/details?_id=${_id}&name=${encodeURIComponent(name)}`);
   };
 
+  const handleEditRecipe = (id: string) => {
+    navigate(`/editrecipe/${id}`);
+    console.log(id);
+  };
+
   const getRecipes = () => {
     axios
       .get("http://localhost:5500/api/recipes/")
@@ -96,6 +101,7 @@ export default function Home() {
             </button>
 
             <br />
+            <button onClick={() => handleEditRecipe(recipe._id)}>EDIT</button>
           </div>
         ))}
       </div>

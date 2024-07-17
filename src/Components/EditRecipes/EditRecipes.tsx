@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react";
-import "./AddRecipes.scss";
+import "./EditRecipes.scss";
 
 import ReactStars from "react-stars";
 import Select from "react-select";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 
-export default function Addrecipes() {
+export default function EditRecipes() {
   const [instruction, setInstruction] = useState([""]);
   const [ingredients, setIngrdients] = useState([""]);
   const [image, setImage] = useState<string | ArrayBuffer>("");
@@ -25,37 +25,102 @@ export default function Addrecipes() {
     { value: "Hard", label: "Hard" },
   ];
   const navigate = useNavigate();
-  const postData = (e) => {
-    e.preventDefault();
-    const payload = {
-      recipeName: recipeNameRef.current.value,
-      prepTime: prepTimeRef.current.value,
-      calories: caloriesRef.current.value,
-      description: descriptionRef.current.value,
-      instructions: instruction,
-      ingredients,
-      image,
-      rating,
-      difficulty: selectedOption.value,
-    };
+  // const postData = (e) => {
+  //   e.preventDefault();
+  //   const payload = {
+  //     recipeName: recipeNameRef.current.value,
+  //     prepTime: prepTimeRef.current.value,
+  //     calories: caloriesRef.current.value,
+  //     description: descriptionRef.current.value,
+  //     instructions: instruction,
+  //     ingredients,
+  //     image,
+  //     rating,
+  //     difficulty: selectedOption.value,
+  //   };
+  //   axios
+  //     .patch(`http://localhost:5500/api/recipes/`, payload)
+  //     .then(() => {
+  //       alert("yay it worked");
+  //       navigate("/");
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+  let { id } = useParams();
+  const getData = async () => {
+    console.log(id);
+
     axios
-      .post(`http://localhost:5500/api/recipes/`, payload)
-      .then(() => {
-        alert("yay it worked");
-        navigate("/");
+      .get(`http://localhost:5500/api/recipes/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        caloriesRef.current.value = res.data.calories;
+        recipeNameRef.current.value = res.data.recipeName;
+        prepTimeRef.current.value = res.data.prepTime;
+        descriptionRef.current.value = "We updated it!";
+
+        setInstruction(res.data.instructions);
+        setIngrdients(res.data.ingredients);
+        // console.log(res.data.difficulty);
+        setSelectedOption({
+          value: res.data.difficulty,
+          label: res.data.difficulty,
+        });
+        setRating(res.data.rating);
+        setImage(res.data.image);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  const patchData = (e) => {
+    e.preventDefault();
+    alert("I AM POOPY");
+
+    const payload = {
+      instruction,
+      ingredients,
+      image,
+      rating,
+      selectedOption,
+      calories: caloriesRef.current.value,
+      recipeName: recipeNameRef.current.value,
+      prepTime: prepTimeRef.current.value,
+      description: descriptionRef.current.value,
+      difficulty: selectedOption.label,
+    };
+
+    console.log(ingredients);
+
+    axios
+      .patch(`http://localhost:5500/api/recipes/${id}`, payload)
+      .then(() => {
+        navigate("/");
+        alert("yay we arent so poopy after all");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    console.log(selectedOption);
+  });
+
   const handleAddMore = () => {
     setInstruction([...instruction, ""]);
   };
-  const handleRemovePoop = (poopIndex: number) => {
-    console.log(poopIndex);
+  const handleRemoveIngredients = (ingredientsIndex: number) => {
+    console.log(ingredientsIndex);
     const newArr = ingredients.filter((ingItem, index) => {
-      return index !== poopIndex;
+      return index !== ingredientsIndex;
     });
 
     setIngrdients([...newArr]);
@@ -84,8 +149,14 @@ export default function Addrecipes() {
     const updateArray = [...ingredients];
     updateArray[indexIng] = e;
     setIngrdients([...updateArray]);
+
     console.log(updateArray);
   };
+
+  // // debuging purposes
+  // useEffect(() => {
+  //   console.log(ingredients);
+  // });
 
   function readFile(e: any) {
     let files = e.target.files;
@@ -104,7 +175,7 @@ export default function Addrecipes() {
   return (
     <div className="add-recipe-wrapper">
       <h2>Add a New Recipe</h2>
-      <form onSubmit={(e) => postData(e)}>
+      <form onSubmit={(e) => patchData(e)}>
         <div className="form-items">
           <label htmlFor="recipeName">Recipe Name</label>
           <input
@@ -154,6 +225,7 @@ export default function Addrecipes() {
             defaultValue={selectedOption}
             onChange={setSelectedOption}
             options={options}
+            key={selectedOption}
           />
         </div>
 
@@ -178,6 +250,7 @@ export default function Addrecipes() {
                   type="text"
                   name=""
                   id=""
+                  value={element}
                   placeholder={`Instruction # ${index + 1}`}
                   onChange={(e) => handleInputChange(e.target.value, index)}
                 />
@@ -209,6 +282,7 @@ export default function Addrecipes() {
                     type="text"
                     name=""
                     id=""
+                    value={element}
                     onChange={(e) =>
                       handleUpdateIngredients(e.target.value, index)
                     }
@@ -216,10 +290,10 @@ export default function Addrecipes() {
                   />
                   {ingredients.length > 1 && (
                     <button
-                      onClick={() => handleRemovePoop(index)}
+                      onClick={() => handleRemoveIngredients(index)}
                       type="button"
                     >
-                      Remove Poop
+                      Remove Ingredients
                     </button>
                   )}
                 </div>
@@ -227,7 +301,7 @@ export default function Addrecipes() {
             );
           })}
           <button type="button" onClick={handleAddIngredients}>
-            Add More Poop
+            Add More Ingredients
           </button>
         </div>
         <div className="poopyImages">
